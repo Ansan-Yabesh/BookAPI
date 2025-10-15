@@ -1,21 +1,26 @@
-import express from 'express';
-import { getBooks, getBook, createBook, updateBook, deleteBook } from '../controllers/bookController.js';
+const express = require('express');
+const {
+  getBooks,
+  getBook,
+  createBook,
+  updateBook,
+  deleteBook,
+  addToFavorites,
+  getFavorites,
+  removeFromFavorites
+} = require('../controllers/bookController');
+const { authenticate, authorize } = require('../middleware/auth');
 
 const router = express.Router();
 
-// Get all books
 router.get('/', getBooks);
-
-// Get single book
 router.get('/:id', getBook);
+router.post('/', authenticate, authorize('manager', 'admin'), createBook);
+router.put('/:id', authenticate, authorize('manager', 'admin'), updateBook);
+router.delete('/:id', authenticate, authorize('manager', 'admin'), deleteBook);
 
-// Create a new book
-router.post('/', createBook);
+router.post('/:bookId/favorites', authenticate, authorize('user'), addToFavorites);
+router.get('/favorites', authenticate, authorize('user'), getFavorites);
+router.delete('/:bookId/favorites', authenticate, authorize('user'), removeFromFavorites);
 
-// Update a book
-router.put('/:id', updateBook);
-
-// Delete a book
-router.delete('/:id', deleteBook);
-
-export default router;
+module.exports = router;

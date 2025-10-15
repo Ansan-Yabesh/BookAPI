@@ -1,25 +1,30 @@
-import express from 'express';
-import dotenv from 'dotenv';
-dotenv.config({ debug: false }); 
-
-import bodyParser from 'body-parser';
-import connectDB from './lib/db.js';
-import booksRoutes from './routes/books.js';
+require('dotenv').config();
+const express = require('express');
+const mongoose = require('mongoose');
+const authRoutes = require('./routes/auth');
+const bookRoutes = require('./routes/books');
 
 const app = express();
-const PORT = process.env.PORT; 
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+// Middleware
+app.use(express.json());
 
-// Connect to the database
-connectDB();
+// Database connection
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/bookapi', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(() => console.log('MongoDB connected'))
+  .catch(err => console.error('MongoDB connection error:', err));
 
-// Use routes
-app.use('/api/books', booksRoutes);
+// Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/books', bookRoutes);
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port 3K`);
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Something went wrong!' });
 });
 
-//version 2.0 on the way bby!
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
