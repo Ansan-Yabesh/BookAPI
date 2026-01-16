@@ -1,0 +1,418 @@
+{
+  "info": {
+    "name": "BookAPI",
+    "description": "BookAPI - Search, Filter, Paginate Books and Manage Users",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"Charles\",\n  \"email\": \"charles@gmail.com\",\n  \"password\": \"charles123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/auth/register",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Register a new user. Response: User registered successfully. Awaiting approval."
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"charles@gmail.com\",\n  \"password\": \"charles123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/auth/login",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Login to get JWT token. Response includes token and user info."
+          }
+        },
+        {
+          "name": "Get All Users (Admin Only)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/api/auth/users",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "auth", "users"]
+            },
+            "description": "Get all users (requires admin token). Add token to Authorization header."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Books - Search & Filter",
+      "item": [
+        {
+          "name": "Get All Books (No Filter)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/books",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "books"]
+            },
+            "description": "Get all books with pagination (page 1, 10 per page)"
+          }
+        },
+        {
+          "name": "Search by Title/Author (q=harry)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/books?q=harry",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "books"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "harry"
+                }
+              ]
+            },
+            "description": "Text search on title, author, and description (case-insensitive). Returns books matching 'harry'."
+          }
+        },
+        {
+          "name": "Filter by Single Genre (genres=Fantasy)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/books?genres=Fantasy",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "books"],
+              "query": [
+                {
+                  "key": "genres",
+                  "value": "Fantasy"
+                }
+              ]
+            },
+            "description": "Filter books by a single genre. Genre matching is case-insensitive."
+          }
+        },
+        {
+          "name": "Filter by Multiple Genres (genres=Fantasy,Adventure)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/books?genres=Fantasy,Adventure",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "books"],
+              "query": [
+                {
+                  "key": "genres",
+                  "value": "Fantasy,Adventure"
+                }
+              ]
+            },
+            "description": "Filter books by multiple genres (comma-separated). Returns books in Fantasy OR Adventure."
+          }
+        },
+        {
+          "name": "Pagination - Page 1 (page=1)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/books?page=1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "books"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Get page 1 of books (10 per page). Default is page 1."
+          }
+        },
+        {
+          "name": "Pagination - Page 2 (page=2)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/books?page=2",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "books"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "2"
+                }
+              ]
+            },
+            "description": "Get page 2 of books (10 per page)."
+          }
+        },
+        {
+          "name": "Combined: Search + Filter + Pagination",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/books?q=wizard&genres=Fantasy,Magic&page=1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "books"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "wizard"
+                },
+                {
+                  "key": "genres",
+                  "value": "Fantasy,Magic"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Combine search text, genre filter, and pagination. Returns books matching 'wizard' in title/author/description AND in Fantasy or Magic genres, page 1 (10 per page)."
+          }
+        },
+        {
+          "name": "Case-Insensitive Genre Match (genres=fAntAsy)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/books?genres=fAntAsy",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "books"],
+              "query": [
+                {
+                  "key": "genres",
+                  "value": "fAntAsy"
+                }
+              ]
+            },
+            "description": "Genre matching is case-insensitive. 'fAntAsy', 'fantasy', and 'FANTASY' will all match books with genre 'Fantasy'."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Books - CRUD",
+      "item": [
+        {
+          "name": "Create Book (Manager/Admin Only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"The Hobbit\",\n  \"author\": \"J.R.R. Tolkien\",\n  \"genre\": \"Fantasy\",\n  \"description\": \"A fantasy adventure about a hobbit named Bilbo.\",\n  \"publishedYear\": 1937\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/books",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "books"]
+            },
+            "description": "Create a new book. Requires manager/admin token."
+          }
+        },
+        {
+          "name": "Get Single Book",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/books/64f8a1b2c3d4e5f6g7h8i9j0",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "books", "64f8a1b2c3d4e5f6g7h8i9j0"]
+            },
+            "description": "Get a single book by ID. Replace ID with a real book _id from the database."
+          }
+        },
+        {
+          "name": "Update Book (Manager/Admin Only)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"The Hobbit: Revised Edition\",\n  \"author\": \"J.R.R. Tolkien\",\n  \"genre\": \"Fantasy\",\n  \"description\": \"Updated description.\",\n  \"publishedYear\": 1937\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/books/64f8a1b2c3d4e5f6g7h8i9j0",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "books", "64f8a1b2c3d4e5f6g7h8i9j0"]
+            },
+            "description": "Update a book by ID. Requires manager/admin token. Replace ID with a real book _id."
+          }
+        },
+        {
+          "name": "Delete Book (Manager/Admin Only)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/api/books/64f8a1b2c3d4e5f6g7h8i9j0",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "books", "64f8a1b2c3d4e5f6g7h8i9j0"]
+            },
+            "description": "Delete a book by ID. Requires manager/admin token. Replace ID with a real book _id."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Favorites",
+      "item": [
+        {
+          "name": "Get My Favorites",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/api/books/favorites",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "books", "favorites"]
+            },
+            "description": "Get your favorite books. Requires user token."
+          }
+        },
+        {
+          "name": "Add Book to Favorites",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/api/books/64f8a1b2c3d4e5f6g7h8i9j0/favorites",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "books", "64f8a1b2c3d4e5f6g7h8i9j0", "favorites"]
+            },
+            "description": "Add a book to your favorites. Requires user token. Replace ID with a real book _id."
+          }
+        },
+        {
+          "name": "Remove Book from Favorites",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/api/books/64f8a1b2c3d4e5f6g7h8i9j0/favorites",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "books", "64f8a1b2c3d4e5f6g7h8i9j0", "favorites"]
+            },
+            "description": "Remove a book from your favorites. Requires user token. Replace ID with a real book _id."
+          }
+        }
+      ]
+    }
+  ]
+}
